@@ -13,7 +13,7 @@ exports.login = async (ctx, next) => {
     let respon = {
       code: "0",
       message: "success",
-      data: {user: userInfo, token: token},
+      data: { user: userInfo, token: token }
     }
     return respon
   } catch (err) {
@@ -27,17 +27,21 @@ exports.login = async (ctx, next) => {
 
 // 注册用户
 exports.sign = async (ctx, next) => {
-    let params = ctx.request.body
-    try{
-        let list = await User.find(params).exec()
-        if(list.length){
-            return {
-                code: '1',
-                message: '已存在用户，请重新输入'
-            }
-        }
-        
-    }catch{
-
+  let params = ctx.request.body
+  try {
+    let list = await User.find(params).exec()
+    if (list.length) {
+      return {
+        code: "1",
+        message: "已存在用户，请重新输入"
+      }
     }
+    let user = new User(params)
+    const res = await user.save()
+    return {
+      code: "1",
+      message: "注册成功",
+      data: res
+    }
+  } catch {}
 }
