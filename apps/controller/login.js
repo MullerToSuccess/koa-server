@@ -4,6 +4,7 @@ const addToken = require("../token/addToken")
 // 获取用户信息列表
 exports.login = async (ctx, next) => {
   let params = ctx.request.body
+  console.log(222222222222222222222222, ctx.request)
   console.log("login", params)
   try {
     let list = await User.find(params).exec()

@@ -13,25 +13,28 @@ exports.getUserList = async (ctx, next) => {
       let payload
       try {
         // token 验证
+        console.log(11111111111, token)
         payload = await verify(token, "token")
         console.log(payload)
         ctx.body = {
           payload
         }
-      } catch (error) {}
+        let list = await User.find(params).exec()
+        let respon = {
+          code: "0",
+          message: "success",
+          data: list
+        }
+        return respon
+      } catch (error) {
+        throw error
+      }
     } else {
       ctx.body = {
         message: "token 错误",
         code: -1
       }
     }
-    let list = await User.find(params).exec()
-    let respon = {
-      code: "0",
-      message: "success",
-      data: list
-    }
-    return respon
   } catch (err) {
     let respon = {
       code: "1",

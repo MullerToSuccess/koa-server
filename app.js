@@ -6,15 +6,14 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const cors = require('koa2-cors');
+const koaJwt = require('koa-jwt')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
 const login = require('./routes/login')
 
 
-// +++++++++
 
-const ModelDb = require('./db')
 
 // error handler
 onerror(app)
@@ -32,12 +31,6 @@ app.use(views(__dirname + '/views', {
   extension: 'pug'
 }))
 
-// logger
-// app.use(async (ctx) => {
-//   console.log("=================")
-//   // let data = await ModelDb.query()
-//   // ctx.body = data
-// })
 
 // routes
 app.use(index.routes(), index.allowedMethods())
@@ -47,6 +40,18 @@ app.use(login.routes(), login.allowedMethods())
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
+  if(err.status === 401){
+    ctx.status = 401
+    ctx.body = 'Protected resource, use Authorization header to get access\n';
+  }else{
+    throw err
+  }
+ // jwt 验证
+  app.use(koaJwt({
+    secret: 'token'
+  }).unless({
+    path: [/\/login\/login/]
+  }))
 });
 
 module.exports = app
