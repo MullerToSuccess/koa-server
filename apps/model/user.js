@@ -1,12 +1,13 @@
 const mongoose = require("../../db/db")
 const Schema = mongoose.Schema
 
-const ceshiSchema = new Schema({
+const userSchema = new Schema({
+  userId: String,
   name: String,
-  phone: String,
-  sex: String
+  password: String,
+  email: String
 })
 
-const User = mongoose.model("user", ceshiSchema)
+const User = mongoose.model("user", userSchema)
 
 module.exports = User // 返回model

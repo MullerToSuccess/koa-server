@@ -12,10 +12,7 @@ exports.getUserList = async (ctx, next) => {
     if (token) {
       let payload
       try {
-        // token 验证
-        console.log(11111111111, token)
         payload = await verify(token, "token")
-        console.log(payload)
         ctx.body = {
           payload
         }
@@ -51,11 +48,55 @@ exports.saveUser = async (ctx, next) => {
     let params = ctx.request.body
     const user = new User(params)
     await user.save()
-    let list = await User.find().exec()
+    let list = await User.find(params).exec()
+    // token 校验
     let respon = {
       code: "0",
       message: "success",
       data: list
+    }
+    return respon
+  } catch (err) {
+    let respon = {
+      code: "1",
+      message: "error",
+      data: err
+    }
+    return respon
+  }
+}
+// 更新用户信息
+exports.updateUser = async (ctx, next) => {
+  try {
+    let params = ctx.request.body
+    // const user = new User(params)
+    await User.update({userId: params.userId}, params)
+    // let list = await User.find(params).exec()
+    // token 校验
+    let respon = {
+      code: "0",
+      message: "更新成功"
+    }
+    return respon
+  } catch (err) {
+    let respon = {
+      code: "1",
+      message: "error",
+      data: err
+    }
+    return respon
+  }
+}
+
+// 删除用户
+exports.deleteUser = async (ctx, next) => {
+  try {
+    let params = ctx.request.body
+    await User.deleteOne({userId: params.userId})
+    // token 校验
+    let respon = {
+      code: "0",
+      message: "删除成功"
     }
     return respon
   } catch (err) {
